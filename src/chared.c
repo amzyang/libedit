@@ -436,6 +436,7 @@ ch_init(EditLine *el)
 	el->el_map.current		= el->el_map.key;
 
 	el->el_state.inputmode		= MODE_INSERT; /* XXX: save a default */
+	CURSOR_LINE
 	el->el_state.doingarg		= 0;
 	el->el_state.metanext		= 0;
 	el->el_state.argument		= 1;
@@ -464,6 +465,7 @@ ch_reset(EditLine *el)
 	el->el_map.current		= el->el_map.key;
 
 	el->el_state.inputmode		= MODE_INSERT; /* XXX: save a default */
+	CURSOR_LINE
 	el->el_state.doingarg		= 0;
 	el->el_state.metanext		= 0;
 	el->el_state.argument		= 1;
