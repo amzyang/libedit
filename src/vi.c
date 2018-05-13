@@ -291,6 +291,7 @@ vi_change_meta(EditLine *el, wint_t c __attribute__((__unused__)))
          * Delete with insert == change: first we delete and then we leave in
          * insert mode.
          */
+	CURSOR_LINE
 	return cv_action(el, DELETE | INSERT);
 }
 
@@ -303,6 +304,7 @@ libedit_private el_action_t
 /*ARGSUSED*/
 vi_insert_at_bol(EditLine *el, wint_t c __attribute__((__unused__)))
 {
+	CURSOR_LINE
 
 	el->el_line.cursor = el->el_line.buffer;
 	cv_undo(el);
@@ -319,6 +321,7 @@ libedit_private el_action_t
 /*ARGSUSED*/
 vi_replace_char(EditLine *el, wint_t c __attribute__((__unused__)))
 {
+	CURSOR_UNDERLINE
 
 	if (el->el_line.cursor >= el->el_line.lastchar)
 		return CC_ERROR;
@@ -338,6 +341,7 @@ libedit_private el_action_t
 /*ARGSUSED*/
 vi_replace_mode(EditLine *el, wint_t c __attribute__((__unused__)))
 {
+	CURSOR_UNDERLINE
 
 	el->el_map.current = el->el_map.key;
 	el->el_state.inputmode = MODE_REPLACE;
@@ -354,6 +358,7 @@ libedit_private el_action_t
 /*ARGSUSED*/
 vi_substitute_char(EditLine *el, wint_t c __attribute__((__unused__)))
 {
+	CURSOR_LINE
 
 	c_delafter(el, el->el_state.argument);
 	el->el_map.current = el->el_map.key;
@@ -369,6 +374,7 @@ libedit_private el_action_t
 /*ARGSUSED*/
 vi_substitute_line(EditLine *el, wint_t c __attribute__((__unused__)))
 {
+	CURSOR_LINE
 
 	cv_undo(el);
 	cv_yank(el, el->el_line.buffer,
@@ -387,6 +393,7 @@ libedit_private el_action_t
 /*ARGSUSED*/
 vi_change_to_eol(EditLine *el, wint_t c __attribute__((__unused__)))
 {
+	CURSOR_LINE
 
 	cv_undo(el);
 	cv_yank(el, el->el_line.cursor,
@@ -405,6 +412,7 @@ libedit_private el_action_t
 /*ARGSUSED*/
 vi_insert(EditLine *el, wint_t c __attribute__((__unused__)))
 {
+	CURSOR_LINE
 
 	el->el_map.current = el->el_map.key;
 	cv_undo(el);
@@ -420,6 +428,7 @@ libedit_private el_action_t
 /*ARGSUSED*/
 vi_add(EditLine *el, wint_t c __attribute__((__unused__)))
 {
+	CURSOR_LINE
 	int ret;
 
 	el->el_map.current = el->el_map.key;
@@ -445,6 +454,7 @@ libedit_private el_action_t
 /*ARGSUSED*/
 vi_add_at_eol(EditLine *el, wint_t c __attribute__((__unused__)))
 {
+	CURSOR_LINE
 
 	el->el_map.current = el->el_map.key;
 	el->el_line.cursor = el->el_line.lastchar;
@@ -549,6 +559,7 @@ libedit_private el_action_t
 /*ARGSUSED*/
 vi_command_mode(EditLine *el, wint_t c __attribute__((__unused__)))
 {
+	CURSOR_BLOCK
 
 	/* [Esc] cancels pending action */
 	el->el_chared.c_vcmd.action = NOP;
