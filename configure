@@ -12108,7 +12108,7 @@ CC=$lt_save_CC
 
 
 # libtool -version-info
-LT_VERSION=0:64:0
+LT_VERSION=3:64:0
 
 
 # Check whether --enable-silent-rules was given.
