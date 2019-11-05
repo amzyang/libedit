@@ -1,4 +1,4 @@
-/*	$NetBSD: vi.c,v 1.62 2016/05/09 21:46:56 christos Exp $	*/
+/*	$NetBSD: vi.c,v 1.63 2019/07/23 10:18:52 christos Exp $	*/
 
 /*-
  * Copyright (c) 1992, 1993
@@ -37,7 +37,7 @@
 #if 0
 static char sccsid[] = "@(#)vi.c	8.1 (Berkeley) 6/4/93";
 #else
-__RCSID("$NetBSD: vi.c,v 1.62 2016/05/09 21:46:56 christos Exp $");
+__RCSID("$NetBSD: vi.c,v 1.63 2019/07/23 10:18:52 christos Exp $");
 #endif
 #endif /* not lint && not SCCSID */
 
@@ -291,7 +291,6 @@ vi_change_meta(EditLine *el, wint_t c __attribute__((__unused__)))
          * Delete with insert == change: first we delete and then we leave in
          * insert mode.
          */
-	CURSOR_LINE
 	return cv_action(el, DELETE | INSERT);
 }
 
@@ -304,7 +303,6 @@ libedit_private el_action_t
 /*ARGSUSED*/
 vi_insert_at_bol(EditLine *el, wint_t c __attribute__((__unused__)))
 {
-	CURSOR_LINE
 
 	el->el_line.cursor = el->el_line.buffer;
 	cv_undo(el);
@@ -321,7 +319,6 @@ libedit_private el_action_t
 /*ARGSUSED*/
 vi_replace_char(EditLine *el, wint_t c __attribute__((__unused__)))
 {
-	CURSOR_UNDERLINE
 
 	if (el->el_line.cursor >= el->el_line.lastchar)
 		return CC_ERROR;
@@ -341,7 +338,6 @@ libedit_private el_action_t
 /*ARGSUSED*/
 vi_replace_mode(EditLine *el, wint_t c __attribute__((__unused__)))
 {
-	CURSOR_UNDERLINE
 
 	el->el_map.current = el->el_map.key;
 	el->el_state.inputmode = MODE_REPLACE;
@@ -358,7 +354,6 @@ libedit_private el_action_t
 /*ARGSUSED*/
 vi_substitute_char(EditLine *el, wint_t c __attribute__((__unused__)))
 {
-	CURSOR_LINE
 
 	c_delafter(el, el->el_state.argument);
 	el->el_map.current = el->el_map.key;
@@ -374,7 +369,6 @@ libedit_private el_action_t
 /*ARGSUSED*/
 vi_substitute_line(EditLine *el, wint_t c __attribute__((__unused__)))
 {
-	CURSOR_LINE
 
 	cv_undo(el);
 	cv_yank(el, el->el_line.buffer,
@@ -393,7 +387,6 @@ libedit_private el_action_t
 /*ARGSUSED*/
 vi_change_to_eol(EditLine *el, wint_t c __attribute__((__unused__)))
 {
-	CURSOR_LINE
 
 	cv_undo(el);
 	cv_yank(el, el->el_line.cursor,
@@ -412,7 +405,6 @@ libedit_private el_action_t
 /*ARGSUSED*/
 vi_insert(EditLine *el, wint_t c __attribute__((__unused__)))
 {
-	CURSOR_LINE
 
 	el->el_map.current = el->el_map.key;
 	cv_undo(el);
@@ -428,7 +420,6 @@ libedit_private el_action_t
 /*ARGSUSED*/
 vi_add(EditLine *el, wint_t c __attribute__((__unused__)))
 {
-	CURSOR_LINE
 	int ret;
 
 	el->el_map.current = el->el_map.key;
@@ -454,7 +445,6 @@ libedit_private el_action_t
 /*ARGSUSED*/
 vi_add_at_eol(EditLine *el, wint_t c __attribute__((__unused__)))
 {
-	CURSOR_LINE
 
 	el->el_map.current = el->el_map.key;
 	el->el_line.cursor = el->el_line.lastchar;
@@ -559,7 +549,6 @@ libedit_private el_action_t
 /*ARGSUSED*/
 vi_command_mode(EditLine *el, wint_t c __attribute__((__unused__)))
 {
-	CURSOR_BLOCK
 
 	/* [Esc] cancels pending action */
 	el->el_chared.c_vcmd.action = NOP;
@@ -1030,10 +1019,10 @@ vi_histedit(EditLine *el, wint_t c __attribute__((__unused__)))
 		return CC_ERROR;
 	len = (size_t)(el->el_line.lastchar - el->el_line.buffer);
 #define TMP_BUFSIZ (EL_BUFSIZ * MB_LEN_MAX)
-	cp = el_malloc(TMP_BUFSIZ * sizeof(*cp));
+	cp = el_calloc(TMP_BUFSIZ, sizeof(*cp));
 	if (cp == NULL)
 		goto error;
-	line = el_malloc(len * sizeof(*line) + 1);
+	line = el_calloc(len + 1, sizeof(*line));
 	if (line == NULL)
 		goto error;
 	wcsncpy(line, el->el_line.buffer, len);
