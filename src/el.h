@@ -157,7 +157,3 @@ libedit_private EditLine *el_init_internal(const char *, FILE *, FILE *,
 #define EL_ABORT(a)	abort()
 #endif
 #endif /* _h_el */
-
-#define CURSOR_BLOCK (printf("\x1b[1 q"));
-#define CURSOR_UNDERLINE (printf("\x1b[3 q"));
-#define CURSOR_LINE (printf("\x1b[5 q"));
